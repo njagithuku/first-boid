@@ -1,27 +1,49 @@
-// We need an X and Y position to start in the middle
-let x = 200;
-let y = 200;
-
-// We need a speed for BOTH directions
-let speedX = 2;
-let speedY = 3;
+let flock = []; // empty list
 
 function setup() {
   createCanvas(400, 400);
+  
+  // "for loop" that repeats 100 times
+  for (let i = 0; i < 100; i++) {
+    flock.push(new Boid()); // Stamp out a new boid and add it to the list
+  }
 }
 
 function draw() {
   background(220);
   
-  circle(x, y, 20); // Draw the circle at our x and y variables
+  // Tell every boid in the flock list to act
+  for (let boid of flock) {
+    boid.move();
+    boid.show();
+  }
+}
+
+// blueprint class
+class Boid {
+  // 'constructor' 
+  constructor() {
+    this.x = random(width);      // Start at a random X on the screen
+    this.y = random(height);     // Start at a random Y on the screen
+    this.speedX = random(-3, 3); // Random speed left or right
+    this.speedY = random(-3, 3); // Random speed up or down
+  }
   
-  // Move the circle by adding the speed to the position
-  x = x + speedX;
-  y = y + speedY;
+  //instructions for how a boid moves
+  move() {
+    this.x = this.x + this.speedX;
+    this.y = this.y + this.speedY;
+    
+    // Pac-Man wrapping (using 'width' and 'height' instead of hard numbers)
+    if (this.x > width) this.x = 0;
+    if (this.x < 0) this.x = width;
+    if (this.y > height) this.y = 0;
+    if (this.y < 0) this.y = height;
+  }
   
-  // The Pac-Man Effect: If it goes off one edge, teleport it to the other
-  if (x > 400) { x = 0; } // If it goes off the right, move to the left
-  if (x < 0) { x = 400; } // If it goes off the left, move to the right
-  if (y > 400) { y = 0; } // If it goes off the bottom, move to the top
-  if (y < 0) { y = 400; } // If it goes off the top, move to the bottom
+  // instructions 
+  show() {
+    fill(50, 150, 255); // Colors it blue!
+    circle(this.x, this.y, 10);
+  }
 }
